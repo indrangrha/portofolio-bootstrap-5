@@ -187,22 +187,35 @@
     <script>
       const scriptURL = "https://script.google.com/macros/s/AKfycbwX2GQ_RFuRlpZZ-IjEals8N750X2dgODeyhnX0zV6ExSZBUNskSNAUw68wQoq3HUmp/exec";
       const form = document.forms["portofolio-contact-form"];
-      const btnKirim = document.querySelector(".btn-kirim");
       const alert = document.querySelector(".my-alert");
+
       form.addEventListener("submit", (e) => {
         e.preventDefault();
-        // ketika tombol submit diklik
-        // tampilkan tombol loading
+
+        // Kirim data menggunakan fetch
         fetch(scriptURL, { method: "POST", body: new FormData(form) })
           .then((response) => {
-            // tampilkan tombol kirim
-            // tampilkan alerts
-            alert.classList.toggle("d-none");
-            console.log("Success!", response);
-            // reset form
-            form.reset();
+            if (response.ok) {
+              // Tampilkan alert hanya jika pengiriman data berhasil
+              alert.classList.remove("d-none");
+              console.log("Success!", response);
+              // Reset form
+              form.reset();
+
+              // Sembunyikan alert setelah beberapa detik
+              setTimeout(() => {
+                alert.classList.add("d-none");
+              }, 3000); // Tampilkan alert selama 3 detik
+            } else {
+              // Tangani kasus jika respons tidak ok (misalnya status 4xx atau 5xx)
+              console.error("Response error:", response.statusText);
+            }
           })
-          .catch((error) => console.error("Error!", error.message));
+          .catch((error) => {
+            console.error("Error!", error.message);
+            // Anda bisa menambahkan logika tambahan jika diinginkan
+            // Misalnya, menampilkan pesan kesalahan atau menjaga alert tetap terlihat
+          });
       });
     </script>
   </body>
